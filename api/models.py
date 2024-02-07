@@ -1,5 +1,5 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
+from django.db import models, transaction
 from rest_framework.exceptions import ValidationError
 
 
@@ -39,8 +39,34 @@ class Workers(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.second_name} {self.otchestvo}'
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
         if self.work:
             self.salary = float(self.work.zarplata) * float(self.stavka)  # Вычисляем зарплату
 
         super(Workers, self).save(*args, **kwargs)
+
+
+class DismissedWorkers(models.Model):
+    worker = models.ForeignKey(Workers, on_delete=models.CASCADE)
+    works = models.ForeignKey(Works, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=60, editable=False)
+    datetime_birday = models.DateField(editable=False)
+    dolznost = models.CharField(max_length=250, editable=False)
+    description = models.TextField(blank=False, null= False, verbose_name='Причина Увольнения')
+
+    class Meta:
+        verbose_name = "Уволеный cотрудник"
+        verbose_name_plural = 'Уволеные сотрудники'
+
+    def __str__(self):
+        return self.full_name
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        if self.worker and self.works:
+            self.full_name = f"{self.worker.second_name} {self.worker.first_name} {self.worker.otchestvo}"
+            self.datetime_birday = self.worker.date_rojdenia
+            self.dolznost = self.works.name_work
+        super().save(*args, **kwargs)
+
