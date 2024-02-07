@@ -7,7 +7,7 @@ class WorkersAdmin(admin.ModelAdmin):
 
 
 class DismissedWorkersAdmin(admin.ModelAdmin):
-    readonly_fields = ('datetime_birday', 'dolznost', 'full_name')  # Предполагается, что 'datetime_birday' и 'dolznost' являются атрибутами вашей модели DismissedWorkers
+    readonly_fields = ('datetime_birday', 'dolznost',)  # Предполагается, что 'datetime_birday' и 'dolznost' являются атрибутами вашей модели DismissedWorkers
 
 
 admin.site.register(Works)
