@@ -38,7 +38,7 @@ class Workers(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.second_name} {self.otchestvo}'
 
-    @transaction.atomic
+
     def save(self, *args, **kwargs):
         if self.work:
             self.salary = float(self.work.zarplata) * float(self.stavka)  # Вычисляем зарплату
@@ -59,7 +59,6 @@ class DismissedWorkers(models.Model):
     def __str__(self):
         return str(self.worker)
 
-    @transaction.atomic
     def save(self, *args, **kwargs):
         if self.worker:
             self.datetime_birday = self.worker.date_rojdenia
