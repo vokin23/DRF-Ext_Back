@@ -38,7 +38,6 @@ class Workers(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.second_name} {self.otchestvo}'
 
-
     def save(self, *args, **kwargs):
         if self.work:
             self.salary = float(self.work.zarplata) * float(self.stavka)  # Вычисляем зарплату
